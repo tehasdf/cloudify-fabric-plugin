@@ -24,8 +24,9 @@ setup(
     packages=['fabric_plugin'],
     license='LICENSE',
     description='Plugin for reomtely running fabric tasks and command',
+    package_data={'fabric_plugin': ['resources/cloudify.py']},
     install_requires=[
-        'cloudify-plugins-common>=3.3.1',
+        'cloudify-plugins-common>=3.3.0',
         'fabric==1.8.3',
         'six>=1.8.0',
     ]

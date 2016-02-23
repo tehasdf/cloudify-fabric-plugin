@@ -20,6 +20,7 @@ import json
 import requests
 import tempfile
 from StringIO import StringIO
+import pkg_resources
 
 from six import exec_
 from fabric import api as fabric_api
@@ -35,6 +36,7 @@ from cloudify.proxy import client as proxy_client
 from cloudify.proxy import server as proxy_server
 from cloudify.exceptions import NonRecoverableError
 
+import fabric_plugin
 from fabric_plugin import tunnel
 from fabric_plugin import exec_env
 
@@ -140,6 +142,7 @@ def run_script(script_path, fabric_env=None, process=None, **kwargs):
     local_script_path = get_script(ctx.download_resource, script_path)
     base_script_path = os.path.basename(local_script_path)
     remote_ctx_dir = base_dir
+    remote_ctx_wrapper_path = '{0}/cloudify.py'.format(remote_ctx_dir)
     remote_ctx_path = '{0}/ctx'.format(remote_ctx_dir)
     remote_ctx_sh_path = '{0}/ctx-sh'.format(remote_ctx_dir)
     remote_scripts_dir = '{0}/scripts'.format(remote_ctx_dir)
@@ -172,11 +175,12 @@ def run_script(script_path, fabric_env=None, process=None, **kwargs):
             # we get 0 exit code if the directory already exists
             fabric_api.run('mkdir -p {0}'.format(remote_scripts_dir))
             fabric_api.run('mkdir -p {0}'.format(remote_work_dir))
-
             # this file has to be present before using ctx
             fabric_api.put(local_ctx_sh_path, remote_ctx_sh_path)
-
             fabric_api.put(proxy_client_path, remote_ctx_path)
+
+        if not fabric_files.exists(remote_ctx_wrapper_path):
+            fabric_api.put(_get_cloudify_ctx(), remote_ctx_wrapper_path)
 
         actual_ctx = ctx._get_current_object()
 
@@ -271,6 +275,7 @@ def run_script(script_path, fabric_env=None, process=None, **kwargs):
 
         env_script = StringIO()
         env['PATH'] = '{0}:$PATH'.format(remote_ctx_dir)
+        env['PYTHONPATH'] = '{0}:$PYTHONPATH'.format(remote_ctx_dir)
         env[CTX_SOCKET_URL] = proxy.socket_url
         for key, value in env.iteritems():
             env_script.write('export {0}={1}\n'.format(key, value))
@@ -319,6 +324,13 @@ def _get_bin_dir():
     if os.name == 'nt' and 'scripts' != os.path.basename(bin_dir).lower():
         bin_dir = os.path.join(bin_dir, 'scripts')
     return bin_dir
+
+
+def _get_cloudify_ctx():
+    return pkg_resources.resource_filename(
+        fabric_plugin.__name__,
+        os.path.join('resources', 'cloudify.py')
+    )
 
 
 def _create_process_config(process, operation_kwargs):
