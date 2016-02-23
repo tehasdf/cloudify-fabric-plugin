@@ -111,4 +111,4 @@ def test_run_python_script():
 # ${test_operation} $@
 
 
-getattr(locals(), os.environ.get('test_operation'))()
+globals()[os.environ.get('test_operation')]()
