@@ -7,6 +7,17 @@ import json
 import shlex
 
 
+def unicode_to_string(text):
+    if type(text) is unicode:
+        return text.encode('ascii', 'ignore')
+    if type(text) is list:
+        return [unicode_to_string(a) for a in text]
+    if type(text) is dict:
+        return dict((unicode_to_string(key), unicode_to_string(
+                value)) for key, value in text.iteritems())
+    return text
+
+
 class CtxLogger(object):
     def _logger(self, message, level='info'):
         cmd = ['ctx', 'logger', level, message]
@@ -31,7 +42,11 @@ class CtxNodeProperties(object):
         cmd = ['ctx', '-j', 'node', 'properties', property_name]
         if self.relationship_type:
             cmd.insert(2, self.relationship_type)
-        return json.loads(subprocess.check_output(cmd))
+        result = json.loads(subprocess.check_output(cmd))
+        print type(result)
+        print result
+        print object
+        return unicode_to_string(result)
 
     def get(self, property_name, returns=None):
         try:
@@ -46,7 +61,11 @@ class CtxNode(object):
 
     def _node(self, prop):
         cmd = ['ctx', '-j', 'node', prop]
-        return json.loads(subprocess.check_output(cmd))
+        result = json.loads(subprocess.check_output(cmd))
+        print type(result)
+        print result
+        print object
+        return unicode_to_string(result)
 
     @property
     def properties(self):
@@ -73,7 +92,11 @@ class CtxInstanceRuntimeProperties(object):
         cmd = ['ctx', '-j', 'instance', 'runtime_properties', property_name]
         if self.relationship_type:
             cmd.insert(2, self.relationship_type)
-        return json.loads(subprocess.check_output(cmd))
+        result = json.loads(subprocess.check_output(cmd))
+        print type(result)
+        print result
+        print object
+        return unicode_to_string(result)
 
     def get(self, property_name, returns=None):
         return self.__getitem__(property_name) or returns
@@ -92,7 +115,11 @@ class CtxNodeInstance(object):
 
     def _instance(self, prop):
         cmd = ['ctx', '-j', 'instance', prop]
-        return json.loads(subprocess.check_output(cmd))
+        result = json.loads(subprocess.check_output(cmd))
+        print type(result)
+        print result
+        print object
+        return unicode_to_string(result)
 
     @property
     def runtime_properties(self):
