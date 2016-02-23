@@ -43,9 +43,6 @@ class CtxNodeProperties(object):
         if self.relationship_type:
             cmd.insert(2, self.relationship_type)
         result = json.loads(subprocess.check_output(cmd))
-        print type(result)
-        print result
-        print object
         return unicode_to_string(result)
 
     def get(self, property_name, returns=None):
@@ -62,9 +59,6 @@ class CtxNode(object):
     def _node(self, prop):
         cmd = ['ctx', '-j', 'node', prop]
         result = json.loads(subprocess.check_output(cmd))
-        print type(result)
-        print result
-        print object
         return unicode_to_string(result)
 
     @property
@@ -93,9 +87,6 @@ class CtxInstanceRuntimeProperties(object):
         if self.relationship_type:
             cmd.insert(2, self.relationship_type)
         result = json.loads(subprocess.check_output(cmd))
-        print type(result)
-        print result
-        print object
         return unicode_to_string(result)
 
     def get(self, property_name, returns=None):
@@ -116,9 +107,6 @@ class CtxNodeInstance(object):
     def _instance(self, prop):
         cmd = ['ctx', '-j', 'instance', prop]
         result = json.loads(subprocess.check_output(cmd))
-        print type(result)
-        print result
-        print object
         return unicode_to_string(result)
 
     @property
