@@ -427,6 +427,21 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
         self.assertEqual(expected_runtime_property_value,
                          instance.runtime_properties['test_value'])
 
+    def test_run_python_script(self):
+        expected_runtime_property_value = 'some_value'
+        _, env = self._execute(
+            'test.run_script',
+            script_path='scripts/script.py',
+            process={
+                'env': {
+                    'test_operation': self._testMethodName,
+                    'test_value': expected_runtime_property_value
+                },
+            })
+        instance = self.env.storage.get_node_instances()[0]
+        self.assertEqual(expected_runtime_property_value,
+                         instance.runtime_properties['test_value'])
+
     @patch('fabric_plugin.tasks.requests.get', _mock_requests_get)
     def test_run_script_from_url(self):
         expected_runtime_property_value = 'some_value'
@@ -562,7 +577,7 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                     }
                 })
             self.fail('expected to raise an exception')
-        except RecoverableError, e:
+        except RecoverableError as e:
             self.assertEquals(error_msg, e.message)
             # verify that ctx outputs error message to stderr
             _, output_local_copy_path = tempfile.mkstemp()
@@ -590,7 +605,7 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                     }
                 })
             self.fail('expected to raise an exception')
-        except NonRecoverableError, e:
+        except NonRecoverableError as e:
             self.assertEquals(error_msg, e.message)
             # verify that ctx outputs error message to stderr
             _, output_local_copy_path = tempfile.mkstemp()
@@ -611,7 +626,7 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                         'return_value': 'some_value'
                     }
                 })
-        except NonRecoverableError, e:
+        except NonRecoverableError as e:
             self.assertEquals(str(ILLEGAL_CTX_OPERATION_ERROR), e.message)
 
     def test_crash_return_after_abort(self):
@@ -627,7 +642,7 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                     }
                 })
             self.fail('expected to raise an exception')
-        except NonRecoverableError, e:
+        except NonRecoverableError as e:
             self.assertEquals(str(ILLEGAL_CTX_OPERATION_ERROR), e.message)
 
     def test_run_script_abort(self):
@@ -643,7 +658,7 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                     },
                 })
             self.fail('expected to raise an exception')
-        except NonRecoverableError, e:
+        except NonRecoverableError as e:
             self.assertEquals(error_msg, e.message)
 
     def test_abort_returns_nonzero_exit_code(self):
@@ -664,7 +679,7 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                     }
                 })
             self.fail('expected to raise an exception')
-        except NonRecoverableError, e:
+        except NonRecoverableError as e:
             self.assertEquals(error_msg, e.message)
             # verify that ctx outputs error message to stderr
             _, output_local_copy_path = tempfile.mkstemp()
@@ -687,7 +702,7 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                     }
                 })
             self.fail('expected to raise an exception')
-        except NonRecoverableError, e:
+        except NonRecoverableError as e:
             self.assertEquals(error_msg, e.message)
 
     def test_run_script_ctx_server_port(self):
