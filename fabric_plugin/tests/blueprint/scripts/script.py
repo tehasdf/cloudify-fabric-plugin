@@ -9,10 +9,6 @@ def test_run_python_script():
     ctx.instance.runtime_properties['test_value'] = \
         os.environ.get('test_value')
 
-# test_run_script() {
-#     ctx instance runtime-properties test_value $test_value
-# }
-
 # test_run_script_from_url() {
 #     ctx instance runtime-properties test_value $test_value
 # }
