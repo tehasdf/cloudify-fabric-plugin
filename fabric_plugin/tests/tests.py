@@ -412,11 +412,11 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
             if files.exists(self.CUSTOM_BASE_DIR):
                 api.run('rm -rf {0}'.format(self.CUSTOM_BASE_DIR))
 
-    def test_run_script(self):
+    def _test_run_script(self, script_path):
         expected_runtime_property_value = 'some_value'
         _, env = self._execute(
             'test.run_script',
-            script_path='scripts/script.sh',
+            script_path=script_path,
             process={
                 'env': {
                     'test_operation': self._testMethodName,
@@ -428,19 +428,10 @@ class FabricPluginRealSSHTests(BaseFabricPluginTest):
                          instance.runtime_properties['test_value'])
 
     def test_run_python_script(self):
-        expected_runtime_property_value = 'some_value'
-        _, env = self._execute(
-            'test.run_script',
-            script_path='scripts/script.py',
-            process={
-                'env': {
-                    'test_operation': self._testMethodName,
-                    'test_value': expected_runtime_property_value
-                },
-            })
-        instance = self.env.storage.get_node_instances()[0]
-        self.assertEqual(expected_runtime_property_value,
-                         instance.runtime_properties['test_value'])
+        self._test_run_script(self, 'scripts/script.py')
+
+    def test_run_script(self):
+        self._test_run_script(self, 'scripts/script.sh')
 
     @patch('fabric_plugin.tasks.requests.get', _mock_requests_get)
     def test_run_script_from_url(self):
