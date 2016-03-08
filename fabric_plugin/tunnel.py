@@ -23,7 +23,7 @@ def documented_contextmanager(func):
 
 
 @documented_contextmanager
-def remote(remote_port, local_port=None, local_host="localhost",
+def remote(remote_port, local_port=None, local_host="127.0.0.1",
            remote_bind_address="127.0.0.1"):
     """
     Create a tunnel forwarding a locally-visible port to the remote target.
@@ -40,7 +40,7 @@ def remote(remote_port, local_port=None, local_host="localhost",
         sockets.append(sock)
 
         try:
-            sock.connect((remote_bind_address, remote_port))
+            sock.connect((local_host, local_port))
         except Exception as e:
             raise NonRecoverableError(
                 '[{0}] rtunnel: cannot connect to {1}:{2} ({3})'.format(
