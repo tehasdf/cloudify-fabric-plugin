@@ -31,7 +31,9 @@ def remote(remote_port, local_port=None, local_host="localhost",
     """
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
-    local_port = _generate_local_port(remote_port, local_port)
+    # local_port = _generate_local_port(remote_port, local_port)
+
+    local_port = remote_port
 
     sockets = []
     channels = []
@@ -99,6 +101,4 @@ def _generate_local_port(remote_port, local_port):
                 raise ValueError("Error: local port " + str(local_port) +
                                  " is not valid!")
 
-    actual_ctx = ctx._get_current_object()
-    proxy = proxy_server.HTTPCtxProxy(actual_ctx, port=local_port)
-    return proxy.port
+    return local_port
