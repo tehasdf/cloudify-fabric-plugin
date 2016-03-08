@@ -57,7 +57,7 @@ def remote(remote_port, local_port=None, local_host="localhost",
 
     transport = connections[fabric_api.env.host_string].get_transport()
     transport.request_port_forward(
-        local_host, local_port, handler=accept)
+        remote_bind_address, remote_port, handler=accept)
 
     try:
         yield
