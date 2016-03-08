@@ -40,7 +40,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
         sockets.append(sock)
 
         try:
-            sock.connect((remote_bind_address, remote_port))
+            sock.connect((local_host, local_port))
         except Exception as e:
             raise NonRecoverableError(
                 '[{0}] rtunnel: cannot connect to {1}:{2} ({3})'.format(
@@ -54,7 +54,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
 
     transport = connections[fabric_api.env.host_string].get_transport()
     transport.request_port_forward(
-        remote_bind_address, remote_port, handler=accept)
+        remote_bind_address, 0, handler=accept)
 
     try:
         yield
