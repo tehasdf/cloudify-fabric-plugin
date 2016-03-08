@@ -11,6 +11,10 @@ import select
 from fabric import api as fabric_api
 from fabric.state import connections
 from fabric.thread_handling import ThreadHandler
+from cloudify.proxy.client import CTX_SOCKET_URL
+from cloudify.proxy import client as proxy_client
+from cloudify.proxy import server as proxy_server
+from cloudify import ctx
 
 from cloudify.exceptions import NonRecoverableError
 
@@ -94,4 +98,7 @@ def _generate_local_port(remote_port, local_port):
         if local_port > 65535:
                 raise ValueError("Error: local port " + str(local_port) +
                                  " is not valid!")
-    return local_port
+
+    actual_ctx = ctx._get_current_object()
+    proxy = proxy_server.HTTPCtxProxy(actual_ctx, port=local_port)
+    return proxy.port
