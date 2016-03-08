@@ -267,7 +267,7 @@ def run_script(script_path, fabric_env=None, process=None, **kwargs):
             else:
                 return script_result
 
-        proxy = proxy_server.HTTPCtxProxy(actual_ctx, port=ctx_server_port)
+        proxy = proxy_server.HTTPCtxProxy(actual_ctx)
 
         env_script = StringIO()
         env['PATH'] = '{0}:$PATH'.format(remote_ctx_dir)
