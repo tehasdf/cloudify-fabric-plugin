@@ -23,12 +23,12 @@ def documented_contextmanager(func):
 
 
 @documented_contextmanager
-def remote(remote_port, local_port=None, local_host="localhost",
-           remote_bind_address="localhost"):
+def remote(local_port, remote_port=None, local_host="localhost",
+           remote_bind_address="127.0.0.1"):
     """
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
-    local_port = _generate_local_port(remote_port, local_port)
+    remote_port = _generate_remote_port(local_port, remote_port)
 
     sockets = []
     channels = []
@@ -85,15 +85,15 @@ def _forwarder(chan, sock):
     sock.close()
 
 
-def _generate_local_port(remote_port, local_port):
+def _generate_remote_port(local_port, remote_port):
     # generating a local port referring to the
     # remote port in order to avoid TCP Forward Exception
-    if not local_port or local_port == remote_port:
-            local_port = remote_port + 100
-    if local_port > 65535:
-        local_port = remote_port + 1
-        if local_port > 65535:
-                raise ValueError("Error: local port " + str(local_port) +
+    if not remote_port or remote_port == local_port:
+            remote_port = local_port + 100
+    if remote_port > 65535:
+        remote_port = local_port + 1
+        if remote_port > 65535:
+                raise ValueError("Error: remote port " + str(remote_port) +
                                  " is not valid!")
 
-    return local_port
+    return remote_port
