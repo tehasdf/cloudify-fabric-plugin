@@ -24,7 +24,7 @@ def documented_contextmanager(func):
 
 @documented_contextmanager
 def remote(remote_port, local_port=None, local_host="localhost",
-           remote_bind_address="127.0.0.1"):
+           remote_bind_address="localhost"):
     """
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
@@ -54,7 +54,7 @@ def remote(remote_port, local_port=None, local_host="localhost",
 
     transport = connections[fabric_api.env.host_string].get_transport()
     transport.request_port_forward(
-        remote_bind_address, remote_port)
+        remote_bind_address, remote_port, handler=accept)
 
     try:
         yield
