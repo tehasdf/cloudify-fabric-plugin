@@ -28,8 +28,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
     """
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
-    if remote_port is None:
-        local_port = remote_port
+    remote_port = _generate_remote_port(local_port, remote_port)
 
     sockets = []
     channels = []
@@ -41,7 +40,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
         sockets.append(sock)
 
         try:
-            sock.connect((local_host, local_port))
+            sock.connect((remote_bind_address, remote_port))
         except Exception as e:
             raise NonRecoverableError(
                 '[{0}] rtunnel: cannot connect to {1}:{2} ({3})'.format(
