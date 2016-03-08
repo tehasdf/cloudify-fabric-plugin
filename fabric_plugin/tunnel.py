@@ -28,7 +28,8 @@ def remote(local_port, remote_port=None, local_host="localhost",
     """
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
-    remote_port = _generate_remote_port(local_port, remote_port)
+    if remote_port is None:
+        remote_port = local_port
 
     sockets = []
     channels = []
@@ -54,7 +55,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
 
     transport = connections[fabric_api.env.host_string].get_transport()
     transport.request_port_forward(
-        local_host, 0, handler=accept)
+        remote_bind_address, remote_port, handler=accept)
 
     try:
         yield
