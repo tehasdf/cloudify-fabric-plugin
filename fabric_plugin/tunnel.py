@@ -29,6 +29,8 @@ def remote(remote_port, local_port=None, local_host="localhost",
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
     local_port = _generate_local_port(remote_port, local_port)
+    sock = socket.socket()
+    sock.connect((local_host, local_port))
 
     sockets = []
     channels = []
