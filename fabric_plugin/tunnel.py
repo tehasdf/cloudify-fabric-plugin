@@ -34,7 +34,7 @@ def remote(remote_port, local_port=None, local_host="localhost",
     channels = []
     threads = []
 
-    def accept(channel, (local_host, local_port), (remote_bind_address, remote_port)):
+    def accept(channel, (src_addr, src_port), (dest_addr, dest_port)):
         channels.append(channel)
         sock = socket.socket()
         sockets.append(sock)
@@ -54,7 +54,7 @@ def remote(remote_port, local_port=None, local_host="localhost",
 
     transport = connections[fabric_api.env.host_string].get_transport()
     transport.request_port_forward(
-        remote_bind_address, remote_port, handler=accept)
+        remote_bind_address, remote_port)
 
     try:
         yield
