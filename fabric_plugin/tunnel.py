@@ -11,10 +11,7 @@ import select
 from fabric import api as fabric_api
 from fabric.state import connections
 from fabric.thread_handling import ThreadHandler
-from cloudify.proxy.client import CTX_SOCKET_URL
-from cloudify.proxy import client as proxy_client
-from cloudify.proxy import server as proxy_server
-from cloudify import ctx
+
 
 from cloudify.exceptions import NonRecoverableError
 
@@ -27,7 +24,7 @@ def documented_contextmanager(func):
 
 @documented_contextmanager
 def remote(remote_port, local_port=None, local_host="localhost",
-           remote_bind_address="127.0.0.1"):
+           remote_bind_address="localhost"):
     """
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
