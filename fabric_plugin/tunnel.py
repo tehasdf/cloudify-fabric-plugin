@@ -29,10 +29,8 @@ def remote(local_port, remote_port=None, local_host="localhost",
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
 
-    remote_port = _generate_remote_port(local_port, remote_port)
-
-    sock = socket.socket()
-    sock.connect((remote_bind_address, remote_port))
+    if remote_port is none:
+        remote_port = _generate_remote_port(local_port, remote_port)
 
     sockets = []
     channels = []
@@ -44,12 +42,12 @@ def remote(local_port, remote_port=None, local_host="localhost",
         sockets.append(sock)
 
         try:
-            sock.connect((remote_bind_address, remote_port))
+            sock.connect((local_host, local_port))
         except Exception as e:
             raise NonRecoverableError(
                 '[{0}] rtunnel: cannot connect to {1}:{2} ({3})'.format(
-                    fabric_api.env.host_string, remote_bind_address,
-                    remote_port, e.message))
+                    fabric_api.env.host_string, local_host,
+                    local_port, e.message))
             channel.close()
             return
 
