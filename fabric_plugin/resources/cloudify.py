@@ -51,6 +51,11 @@ class CtxNodeProperties(object):
         except:
             return returns
 
+    def get_all(self):
+        cmd = ['ctx', '-j', 'node', 'properties']
+        result = json.loads(subprocess.check_output(cmd))
+        return unicode_to_string(result)
+    
 
 class CtxNode(object):
     def __init__(self, relationship_type=None):
