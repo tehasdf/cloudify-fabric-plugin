@@ -31,6 +31,9 @@ def remote(local_port, remote_port=None, local_host="localhost",
 
     remote_port = _generate_remote_port(local_port, remote_port)
 
+    sock = socket.socket()
+    sock.connect((remote_bind_address, remote_port))
+
     sockets = []
     channels = []
     threads = []
@@ -55,7 +58,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
 
     transport = connections[fabric_api.env.host_string].get_transport()
     transport.request_port_forward(
-        local_host, local_port, handler=accept)
+        remote_bind_address, remote_port, handler=accept)
 
     try:
         yield
@@ -65,7 +68,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
             chan.close()
             th.thread.join()
             th.raise_if_needed()
-        transport.cancel_port_forward(local_host, local_port)
+        transport.cancel_port_forward(remote_bind_address, remote_port)
 
 
 def _forwarder(chan, sock):
