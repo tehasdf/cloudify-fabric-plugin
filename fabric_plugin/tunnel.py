@@ -29,8 +29,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
 
-    if remote_port is None:
-        remote_port = _generate_remote_port(local_port, remote_port)
+    remote_port = _generate_remote_port(local_port, remote_port)
 
     sockets = []
     channels = []
@@ -42,7 +41,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
         sockets.append(sock)
 
         try:
-            sock.connect((local_host, local_port))
+            sock.connect((remote_bind_address, remote_port))
         except Exception as e:
             raise NonRecoverableError(
                 '[{0}] rtunnel: cannot connect to {1}:{2} ({3})'.format(
@@ -56,7 +55,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
 
     transport = connections[fabric_api.env.host_string].get_transport()
     transport.request_port_forward(
-        remote_bind_address, remote_port, handler=accept)
+        local_host, local_port, handler=accept)
 
     try:
         yield
@@ -66,7 +65,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
             chan.close()
             th.thread.join()
             th.raise_if_needed()
-        transport.cancel_port_forward(remote_bind_address, remote_port)
+        transport.cancel_port_forward(local_host, local_port)
 
 
 def _forwarder(chan, sock):
