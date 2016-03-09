@@ -29,7 +29,7 @@ def remote(local_port, remote_port=None, local_host="localhost",
     Create a tunnel forwarding a locally-visible port to the remote target.
     """
 
-    if remote_port is none:
+    if remote_port is None:
         remote_port = _generate_remote_port(local_port, remote_port)
 
     sockets = []
