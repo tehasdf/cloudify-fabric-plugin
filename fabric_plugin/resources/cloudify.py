@@ -189,9 +189,14 @@ class Ctx(object):
         if destination:
             cmd.append(destination)
         if params:
+            kwargs = {
+                'template_variables': params
+            }
             if not isinstance(params, dict):
-                raise
-            cmd.append(params)
+                raise RuntimeError('Expecting params to be in the form of '
+                                   'dict')
+            parameters = '@{0}'.format(json.dumps(kwargs))
+            cmd.append(parameters)
         return subprocess.check_output(cmd)
 
 
