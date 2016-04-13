@@ -460,7 +460,7 @@ class CredentialsHandler():
         if 'host_string' in self.fabric_env:
             host_string = self.fabric_env['host_string']
         else:
-            host_string = self.ctx.instance.manager_host_ip
+            host_string = self.ctx.instance.internal_manager_host
         self.logger.debug('ssh host_string is: {0}'.format(host_string))
         return host_string
 

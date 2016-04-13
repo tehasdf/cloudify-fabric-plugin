@@ -11,6 +11,6 @@ def test_task_properties(arg):
 
 def test_implicit_host_string():
     ctx.instance.runtime_properties['expected_host_string'] = \
-        ctx.instance.manager_host_ip
+        ctx.instance.internal_manager_host
 
 non_callable = 1
